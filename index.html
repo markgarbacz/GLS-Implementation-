@@ -1,607 +1,1429 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Global Labour Service – Implementation Plan</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Global Labour Service — Implementation Plan</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0c0d0f;
+  --surface: #13151a;
+  --surface2: #1a1d24;
+  --border: rgba(255,255,255,0.07);
+  --border2: rgba(255,255,255,0.12);
+  --text: #e8e6e0;
+  --muted: #7a7870;
+  --faint: #3a3830;
 
-        :root {
-            --phase1: #20b2aa;
-            --phase2: #f59e0b;
-            --phase3: #ff7f50;
-            --risk-high: #dc2626;
-            --risk-medium: #f59e0b;
-            --risk-low: #16a34a;
-            --text-primary: #1f2937;
-            --text-secondary: #6b7280;
-            --border: #e5e7eb;
-            --bg-light: #f9fafb;
-        }
+  --p1: #2dd4a0;
+  --p1-dim: rgba(45,212,160,0.12);
+  --p1-border: rgba(45,212,160,0.25);
+  --p2: #f0a843;
+  --p2-dim: rgba(240,168,67,0.12);
+  --p2-border: rgba(240,168,67,0.25);
+  --p3: #e05c6a;
+  --p3-dim: rgba(224,92,106,0.12);
+  --p3-border: rgba(224,92,106,0.25);
 
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-            color: var(--text-primary);
-            background: #ffffff;
-            line-height: 1.6;
-        }
+  --risk-h: #e05c6a;
+  --risk-h-dim: rgba(224,92,106,0.12);
+  --risk-m: #f0a843;
+  --risk-m-dim: rgba(240,168,67,0.10);
+  --risk-l: #2dd4a0;
+  --risk-l-dim: rgba(45,212,160,0.10);
 
-        .container {
-            display: flex;
-            min-height: 100vh;
-        }
+  --font-display: 'Syne', sans-serif;
+  --font-body: 'DM Sans', sans-serif;
+  --nav-w: 240px;
+  --radius: 10px;
+}
 
-        /* Sidebar */
-        .sidebar {
-            width: 260px;
-            background: var(--bg-light);
-            border-right: 1px solid var(--border);
-            position: fixed;
-            height: 100vh;
-            overflow-y: auto;
-            padding: 2rem 0;
-        }
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-        .sidebar-title {
-            padding: 0 1.5rem 2rem;
-            font-size: 0.875rem;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-            color: var(--text-secondary);
-        }
+html { scroll-behavior: smooth; }
 
-        .sidebar-nav {
-            list-style: none;
-        }
+body {
+  font-family: var(--font-body);
+  background: var(--bg);
+  color: var(--text);
+  font-size: 15px;
+  line-height: 1.65;
+  min-height: 100vh;
+  display: flex;
+}
 
-        .sidebar-nav li {
-            border-left: 3px solid transparent;
-            transition: all 0.2s;
-        }
+/* ── SIDEBAR ── */
+nav {
+  width: var(--nav-w);
+  flex-shrink: 0;
+  background: var(--surface);
+  border-right: 1px solid var(--border);
+  height: 100vh;
+  position: sticky;
+  top: 0;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  padding: 0 0 2rem;
+}
 
-        .sidebar-nav a {
-            display: block;
-            padding: 0.75rem 1.5rem;
-            color: var(--text-primary);
-            text-decoration: none;
-            font-size: 0.9375rem;
-            transition: color 0.2s;
-        }
+.nav-logo {
+  padding: 1.5rem 1.25rem 1rem;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 0.75rem;
+}
 
-        .sidebar-nav a:hover {
-            color: var(--phase1);
-        }
+.nav-logo .wordmark {
+  font-family: var(--font-display);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--text);
+  line-height: 1.2;
+}
 
-        .sidebar-nav li.active {
-            border-left-color: var(--phase1);
-            background: rgba(32, 178, 170, 0.05);
-        }
+.nav-logo .sub {
+  font-size: 11px;
+  color: var(--muted);
+  margin-top: 2px;
+  letter-spacing: .03em;
+}
 
-        .sidebar-nav li.active a {
-            color: var(--phase1);
-            font-weight: 500;
-        }
+.nav-section-label {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--muted);
+  padding: 1rem 1.25rem 0.35rem;
+}
 
-        /* Main content */
-        .main {
-            margin-left: 260px;
-            flex: 1;
-            padding: 3rem;
-            max-width: 1200px;
-        }
+nav a {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 1.25rem;
+  font-size: 13px;
+  color: var(--muted);
+  text-decoration: none;
+  border-left: 2px solid transparent;
+  transition: color .15s, border-color .15s, background .15s;
+  line-height: 1.3;
+}
 
-        .page-title {
-            font-size: 2.25rem;
-            font-weight: 700;
-            margin-bottom: 3rem;
-            color: var(--text-primary);
-        }
+nav a:hover { color: var(--text); background: rgba(255,255,255,0.03); }
+nav a.active { color: var(--text); border-left-color: var(--p1); background: rgba(45,212,160,0.05); }
+nav a .dot {
+  width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0;
+}
 
-        h2 {
-            font-size: 1.875rem;
-            margin-top: 3rem;
-            margin-bottom: 1.5rem;
-            padding-bottom: 1rem;
-            border-bottom: 2px solid var(--border);
-            scroll-margin-top: 6rem;
-        }
+/* ── MAIN CONTENT ── */
+main {
+  flex: 1;
+  overflow-x: hidden;
+  min-width: 0;
+}
 
-        h2[data-phase="1"] {
-            color: var(--phase1);
-            border-bottom-color: var(--phase1);
-        }
+/* ── HERO ── */
+.hero {
+  padding: 4rem 3.5rem 3rem;
+  border-bottom: 1px solid var(--border);
+  position: relative;
+  overflow: hidden;
+}
 
-        h2[data-phase="2"] {
-            color: var(--phase2);
-            border-bottom-color: var(--phase2);
-        }
+.hero::before {
+  content: '';
+  position: absolute;
+  top: -80px; right: -80px;
+  width: 400px; height: 400px;
+  background: radial-gradient(circle, rgba(45,212,160,0.06) 0%, transparent 70%);
+  pointer-events: none;
+}
 
-        h2[data-phase="3"] {
-            color: var(--phase3);
-            border-bottom-color: var(--phase3);
-        }
+.hero-eyebrow {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--p1);
+  margin-bottom: 1rem;
+}
 
-        h3 {
-            font-size: 1.25rem;
-            margin-top: 2rem;
-            margin-bottom: 1rem;
-            color: var(--text-primary);
-        }
+.hero h1 {
+  font-family: var(--font-display);
+  font-size: clamp(2rem, 4vw, 3.2rem);
+  font-weight: 800;
+  line-height: 1.1;
+  color: var(--text);
+  margin-bottom: 1rem;
+  letter-spacing: -.02em;
+}
 
-        h4 {
-            font-size: 1rem;
-            margin-top: 1.5rem;
-            margin-bottom: 0.75rem;
-            color: var(--text-secondary);
-            font-weight: 600;
-        }
+.hero p {
+  font-size: 16px;
+  color: var(--muted);
+  max-width: 560px;
+  line-height: 1.7;
+  margin-bottom: 2rem;
+  font-weight: 300;
+}
 
-        p {
-            margin-bottom: 1rem;
-            color: var(--text-secondary);
-        }
+.phase-pills {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
 
-        ul, ol {
-            margin-left: 1.5rem;
-            margin-bottom: 1rem;
-        }
+.phase-pill {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 6px 14px;
+  border-radius: 100px;
+  font-size: 12px;
+  font-weight: 500;
+  border: 1px solid;
+}
 
-        li {
-            margin-bottom: 0.5rem;
-            color: var(--text-secondary);
-        }
+.phase-pill.p1 { background: var(--p1-dim); border-color: var(--p1-border); color: var(--p1); }
+.phase-pill.p2 { background: var(--p2-dim); border-color: var(--p2-border); color: var(--p2); }
+.phase-pill.p3 { background: var(--p3-dim); border-color: var(--p3-border); color: var(--p3); }
 
-        code {
-            background: var(--bg-light);
-            padding: 0.25rem 0.5rem;
-            border-radius: 0.25rem;
-            font-family: 'Monaco', 'Courier New', monospace;
-            font-size: 0.875rem;
-        }
+.phase-pill::before {
+  content: '';
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: currentColor;
+  flex-shrink: 0;
+}
 
-        pre {
-            background: var(--bg-light);
-            border: 1px solid var(--border);
-            border-radius: 0.5rem;
-            padding: 1.5rem;
-            overflow-x: auto;
-            margin-bottom: 1rem;
-            font-family: 'Monaco', 'Courier New', monospace;
-            font-size: 0.875rem;
-            color: var(--text-primary);
-        }
+/* ── CONTENT SECTIONS ── */
+.content {
+  padding: 0 3.5rem 5rem;
+}
 
-        .diagram {
-            background: var(--bg-light);
-            border: 1px solid var(--border);
-            border-radius: 0.5rem;
-            padding: 1.5rem;
-            margin: 1.5rem 0;
-            overflow-x: auto;
-            white-space: pre;
-            font-family: 'Monaco', 'Courier New', monospace;
-            font-size: 0.85rem;
-            line-height: 1.4;
-        }
+section {
+  padding-top: 3.5rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--border);
+}
 
-        /* Table */
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin: 1.5rem 0;
-        }
+section:last-child { border-bottom: none; }
 
-        th, td {
-            padding: 1rem;
-            text-align: left;
-            border-bottom: 1px solid var(--border);
-            color: var(--text-secondary);
-        }
+.section-label {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  margin-bottom: 0.5rem;
+}
 
-        th {
-            background: var(--bg-light);
-            font-weight: 600;
-            color: var(--text-primary);
-        }
+.section-label.p1 { color: var(--p1); }
+.section-label.p2 { color: var(--p2); }
+.section-label.p3 { color: var(--p3); }
+.section-label.neutral { color: var(--muted); }
 
-        tr:hover {
-            background: var(--bg-light);
-        }
+h2 {
+  font-family: var(--font-display);
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 0.5rem;
+  letter-spacing: -.02em;
+  line-height: 1.2;
+}
 
-        /* Risk badges */
-        .risk-badge {
-            display: inline-block;
-            padding: 0.375rem 0.75rem;
-            border-radius: 0.25rem;
-            font-size: 0.8125rem;
-            font-weight: 600;
-            color: #ffffff;
-        }
+h3 {
+  font-family: var(--font-display);
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 0.4rem;
+  line-height: 1.3;
+}
 
-        .risk-high {
-            background: var(--risk-high);
-        }
+.section-desc {
+  color: var(--muted);
+  font-size: 14px;
+  max-width: 580px;
+  margin-bottom: 2rem;
+  font-weight: 300;
+  line-height: 1.65;
+}
 
-        .risk-medium {
-            background: var(--risk-medium);
-        }
+/* ── FLOW DIAGRAM ── */
+.flow-diagram {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 2rem;
+  margin-bottom: 2rem;
+  overflow-x: auto;
+}
 
-        .risk-low {
-            background: var(--risk-low);
-        }
+.flow-diagram pre {
+  font-family: 'DM Mono', 'Fira Code', 'Courier New', monospace;
+  font-size: 12px;
+  color: var(--muted);
+  line-height: 1.8;
+  white-space: pre;
+}
 
-        .risk-item {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-            padding: 0.75rem 0;
-            border-bottom: 1px solid var(--border);
-        }
+.flow-sequence {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  margin: 1.5rem 0;
+  overflow-x: auto;
+  padding-bottom: 4px;
+}
 
-        .risk-item:last-child {
-            border-bottom: none;
-        }
+.flow-step {
+  flex: 1;
+  min-width: 90px;
+  text-align: center;
+}
 
-        .risk-text {
-            flex: 1;
-            color: var(--text-secondary);
-        }
+.flow-step-inner {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 10px 8px;
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--muted);
+  line-height: 1.3;
+  transition: all .2s;
+}
 
-        /* Stakeholder grid */
-        .stakeholder-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 1.5rem;
-            margin: 1.5rem 0;
-        }
+.flow-step-inner:hover {
+  border-color: var(--p1-border);
+  color: var(--p1);
+  background: var(--p1-dim);
+}
 
-        .stakeholder-card {
-            background: var(--bg-light);
-            border: 1px solid var(--border);
-            border-radius: 0.5rem;
-            padding: 1.5rem;
-            transition: transform 0.2s, box-shadow 0.2s;
-        }
+.flow-step.p1 .flow-step-inner { border-color: var(--p1-border); color: var(--p1); background: var(--p1-dim); }
+.flow-step.p2 .flow-step-inner { border-color: var(--p2-border); color: var(--p2); background: var(--p2-dim); }
+.flow-step.p3 .flow-step-inner { border-color: var(--p3-border); color: var(--p3); background: var(--p3-dim); }
 
-        .stakeholder-card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-        }
+.flow-arrow {
+  color: var(--faint);
+  font-size: 18px;
+  padding: 0 4px;
+  flex-shrink: 0;
+}
 
-        .stakeholder-name {
-            font-weight: 600;
-            color: var(--text-primary);
-            margin-bottom: 0.5rem;
-        }
+/* ── CARDS GRID ── */
+.cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 12px;
+  margin-bottom: 2rem;
+}
 
-        .stakeholder-role {
-            font-size: 0.875rem;
-            color: var(--text-secondary);
-            margin-bottom: 0.75rem;
-        }
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1.25rem;
+  transition: border-color .2s, background .2s;
+  position: relative;
+  overflow: hidden;
+}
 
-        .stakeholder-responsibility {
-            font-size: 0.85rem;
-            color: var(--text-secondary);
-            line-height: 1.5;
-        }
+.card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+  opacity: 0;
+  transition: opacity .2s;
+}
 
-        /* Responsive */
-        @media (max-width: 768px) {
-            .container {
-                flex-direction: column;
-            }
+.card:hover { border-color: var(--border2); }
+.card:hover::before { opacity: 1; }
 
-            .sidebar {
-                position: relative;
-                width: 100%;
-                height: auto;
-                border-right: none;
-                border-bottom: 1px solid var(--border);
-                padding: 1rem;
-            }
+.card.p1::before { background: var(--p1); }
+.card.p2::before { background: var(--p2); }
+.card.p3::before { background: var(--p3); }
 
-            .main {
-                margin-left: 0;
-                padding: 1.5rem;
-            }
+.card-phase {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  margin-bottom: 6px;
+}
+.card-phase.p1 { color: var(--p1); }
+.card-phase.p2 { color: var(--p2); }
+.card-phase.p3 { color: var(--p3); }
 
-            .page-title {
-                font-size: 1.5rem;
-                margin-bottom: 2rem;
-            }
+.card-title {
+  font-family: var(--font-display);
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 6px;
+}
 
-            h2 {
-                font-size: 1.25rem;
-                margin-top: 2rem;
-            }
+.card-desc {
+  font-size: 12px;
+  color: var(--muted);
+  line-height: 1.55;
+  margin-bottom: 10px;
+  font-weight: 300;
+}
 
-            .stakeholder-grid {
-                grid-template-columns: 1fr;
-            }
-        }
+.tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+}
 
-        /* Scrollbar styling */
-        .sidebar::-webkit-scrollbar {
-            width: 6px;
-        }
+.tag {
+  font-size: 10px;
+  padding: 2px 8px;
+  border-radius: 100px;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  color: var(--muted);
+  font-weight: 500;
+}
 
-        .sidebar::-webkit-scrollbar-track {
-            background: transparent;
-        }
+/* ── PHASE BLOCKS ── */
+.phase-block {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+  margin-bottom: 1.5rem;
+}
 
-        .sidebar::-webkit-scrollbar-thumb {
-            background: var(--border);
-            border-radius: 3px;
-        }
+.phase-block-header {
+  padding: 1.25rem 1.5rem;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+}
 
-        .sidebar::-webkit-scrollbar-thumb:hover {
-            background: var(--text-secondary);
-        }
-    </style>
+.phase-block-accent {
+  width: 4px;
+  border-radius: 2px;
+  align-self: stretch;
+  flex-shrink: 0;
+}
+
+.phase-block-body {
+  padding: 1.25rem 1.5rem;
+}
+
+.phase-meta-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1px;
+  background: var(--border);
+  border-top: 1px solid var(--border);
+}
+
+.phase-meta-item {
+  background: var(--surface);
+  padding: 1rem 1.25rem;
+}
+
+.phase-meta-label {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 4px;
+}
+
+.phase-meta-value {
+  font-family: var(--font-display);
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text);
+}
+
+/* ── TABLE ── */
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+  margin-bottom: 2rem;
+}
+
+.data-table th {
+  text-align: left;
+  padding: 8px 12px;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--muted);
+  border-bottom: 1px solid var(--border);
+}
+
+.data-table td {
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--border);
+  color: var(--muted);
+  vertical-align: top;
+}
+
+.data-table td:first-child { color: var(--text); font-weight: 500; }
+.data-table tr:last-child td { border-bottom: none; }
+.data-table tr:hover td { background: rgba(255,255,255,0.015); }
+
+/* ── RISK CARDS ── */
+.risk-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 2rem;
+}
+
+.risk-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1rem 1.25rem;
+  display: flex;
+  gap: 1rem;
+  align-items: flex-start;
+  transition: border-color .2s;
+}
+
+.risk-card:hover { border-color: var(--border2); }
+
+.risk-badge {
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  font-weight: 700;
+  flex-shrink: 0;
+  font-family: var(--font-display);
+}
+
+.risk-badge.H { background: var(--risk-h-dim); color: var(--risk-h); border: 1px solid rgba(224,92,106,0.2); }
+.risk-badge.M { background: var(--risk-m-dim); color: var(--risk-m); border: 1px solid rgba(240,168,67,0.2); }
+.risk-badge.L { background: var(--risk-l-dim); color: var(--risk-l); border: 1px solid rgba(45,212,160,0.2); }
+
+.risk-content {}
+.risk-title { font-family: var(--font-display); font-size: 14px; font-weight: 600; color: var(--text); margin-bottom: 4px; }
+.risk-detail { font-size: 13px; color: var(--muted); line-height: 1.55; font-weight: 300; margin-bottom: 8px; }
+.risk-mitigation { font-size: 12px; color: var(--muted); line-height: 1.5; padding: 8px 10px; background: var(--surface2); border-radius: 6px; border-left: 2px solid var(--faint); }
+.risk-mitigation strong { color: var(--text); font-weight: 500; }
+.risk-cat-pill {
+  display: inline-block;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  padding: 2px 8px;
+  border-radius: 100px;
+  margin-bottom: 6px;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  color: var(--muted);
+}
+
+/* ── STAKEHOLDER GRID ── */
+.stakeholder-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 12px;
+  margin-bottom: 2rem;
+}
+
+.stakeholder-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1.25rem;
+  transition: border-color .2s;
+}
+
+.stakeholder-card:hover { border-color: var(--border2); }
+
+.sh-top {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+
+.sh-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-display);
+  font-size: 13px;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.sh-name {
+  font-family: var(--font-display);
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text);
+  line-height: 1.2;
+}
+
+.sh-role { font-size: 12px; color: var(--muted); margin-top: 2px; }
+
+.sh-involve {
+  font-size: 12px;
+  color: var(--muted);
+  line-height: 1.55;
+  font-weight: 300;
+  margin-bottom: 12px;
+}
+
+.sh-phases {
+  display: flex;
+  gap: 5px;
+}
+
+.sh-phase-dot {
+  width: 22px;
+  height: 22px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+  font-weight: 700;
+  font-family: var(--font-display);
+}
+
+.sh-phase-dot.on-1 { background: var(--p1-dim); color: var(--p1); border: 1px solid var(--p1-border); }
+.sh-phase-dot.on-2 { background: var(--p2-dim); color: var(--p2); border: 1px solid var(--p2-border); }
+.sh-phase-dot.on-3 { background: var(--p3-dim); color: var(--p3); border: 1px solid var(--p3-border); }
+.sh-phase-dot.off { background: var(--surface2); color: var(--faint); border: 1px solid var(--border); }
+
+/* ── EVOLUTION ── */
+.evolution-track {
+  position: relative;
+  padding-left: 2rem;
+  margin-bottom: 2rem;
+}
+
+.evolution-track::before {
+  content: '';
+  position: absolute;
+  left: 7px;
+  top: 8px;
+  bottom: 8px;
+  width: 1px;
+  background: var(--border);
+}
+
+.evo-item {
+  position: relative;
+  margin-bottom: 2rem;
+  padding-left: 0.5rem;
+}
+
+.evo-item::before {
+  content: '';
+  position: absolute;
+  left: -1.7rem;
+  top: 8px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--faint);
+  border: 2px solid var(--surface);
+}
+
+.evo-item.current::before { background: var(--p1); }
+.evo-item.p1::before { background: var(--p1); }
+.evo-item.p2::before { background: var(--p2); }
+.evo-item.p3::before { background: var(--p3); }
+
+.evo-period {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  margin-bottom: 4px;
+}
+
+.evo-period.p1 { color: var(--p1); }
+.evo-period.p2 { color: var(--p2); }
+.evo-period.p3 { color: var(--p3); }
+.evo-period.current { color: var(--muted); }
+
+.evo-title {
+  font-family: var(--font-display);
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 4px;
+}
+
+.evo-desc {
+  font-size: 13px;
+  color: var(--muted);
+  line-height: 1.55;
+  font-weight: 300;
+}
+
+/* ── COMPONENT TABLE ── */
+.component-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 8px;
+  margin-bottom: 2rem;
+}
+
+.component-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1rem;
+}
+
+.component-name {
+  font-family: var(--font-display);
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 4px;
+}
+
+.component-desc {
+  font-size: 12px;
+  color: var(--muted);
+  line-height: 1.5;
+  font-weight: 300;
+}
+
+.component-phases {
+  display: flex;
+  gap: 4px;
+  margin-top: 8px;
+}
+
+.cp-dot {
+  font-size: 9px;
+  font-weight: 700;
+  padding: 1px 6px;
+  border-radius: 4px;
+  font-family: var(--font-display);
+}
+
+.cp-1 { background: var(--p1-dim); color: var(--p1); }
+.cp-2 { background: var(--p2-dim); color: var(--p2); }
+.cp-3 { background: var(--p3-dim); color: var(--p3); }
+
+/* ── PRINCIPLES LIST ── */
+.principles-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 2rem;
+}
+
+.principle-item {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 0.9rem 1.25rem;
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  font-size: 13px;
+}
+
+.principle-item strong {
+  color: var(--text);
+  font-family: var(--font-display);
+  font-weight: 600;
+  flex-shrink: 0;
+}
+
+.principle-item span {
+  color: var(--muted);
+  font-weight: 300;
+}
+
+/* ── SCROLLSPY ── */
+nav a { scroll-margin-top: 0; }
+
+/* ── RESPONSIVE ── */
+@media (max-width: 768px) {
+  body { flex-direction: column; }
+  nav { width: 100%; height: auto; position: static; flex-direction: row; flex-wrap: wrap; overflow-x: auto; padding: 0.5rem; }
+  .nav-logo { display: none; }
+  .nav-section-label { display: none; }
+  nav a { padding: 6px 10px; font-size: 12px; border-left: none; border-bottom: 2px solid transparent; white-space: nowrap; }
+  nav a.active { border-bottom-color: var(--p1); border-left-color: transparent; }
+  .hero, .content { padding-left: 1.5rem; padding-right: 1.5rem; }
+  .phase-meta-grid { grid-template-columns: 1fr; }
+  .cards-grid { grid-template-columns: 1fr; }
+  .stakeholder-grid { grid-template-columns: 1fr; }
+}
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(16px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.hero > * {
+  animation: fadeUp .5s ease both;
+}
+
+.hero .hero-eyebrow { animation-delay: .05s; }
+.hero h1 { animation-delay: .12s; }
+.hero p { animation-delay: .2s; }
+.hero .phase-pills { animation-delay: .28s; }
+</style>
 </head>
 <body>
-    <div class="container">
-        <nav class="sidebar">
-            <div class="sidebar-title">Contents</div>
-            <ul class="sidebar-nav">
-                <li class="active"><a href="#overview">Overview</a></li>
-                <li><a href="#flow-diagram">Flow Diagram</a></li>
-                <li><a href="#phase-1">Phase 1</a></li>
-                <li><a href="#phase-2">Phase 2</a></li>
-                <li><a href="#phase-3">Phase 3</a></li>
-                <li><a href="#components">Components</a></li>
-                <li><a href="#principles">Principles</a></li>
-                <li><a href="#risks">Risks</a></li>
-                <li><a href="#stakeholders">Stakeholders</a></li>
-                <li><a href="#evolution">Evolution</a></li>
-            </ul>
-        </nav>
 
-        <main class="main">
-            <h1 class="page-title" id="overview">Global Labour Service – Implementation Plan</h1>
+<!-- SIDEBAR -->
+<nav id="sidebar">
+  <div class="nav-logo">
+    <div class="wordmark">GLS</div>
+    <div class="sub">Implementation Plan</div>
+  </div>
 
-            <h2 id="flow-diagram">Prototype Flow Diagram</h2>
-            <p><strong>End-to-End Architecture</strong></p>
-            <div class="diagram">[User (iQ360 UI)]
-        │
-        ▼
-[Micro-Frontend (GLS UI)]
-        │
-        ▼
-[GLS API Layer]
-        │
-        ├───────────────┬──────────────────┬──────────────────┐
-        ▼               ▼                  ▼                  ▼
-[CUP]         [Labour Rules Store]   [SLM Service]     [CFM Service]
-(Access)          (Source of Truth)   (Modelling)        (Execution)
-        │               │                  │                  │
-        ▼               ▼                  ▼                  ▼
-[User Roles]   [Rules + Versions]   [Scenarios]      [Schedules]
-        │               │                  │                  │
-        └───────────────┴──────────┬───────┴──────────────────┘
-                                   ▼
-                        [Insight / Event Layer]
-                                   │
-                                   ▼
-                        [Decision Engine (Optional)]
-                                   │
-                                   ▼
-                           [iQ Alerts / Actions]
-                                   │
-                                   ▼
-                          [Location Manager]</div>
+  <div class="nav-section-label">Overview</div>
+  <a href="#overview"><span class="dot" style="background:var(--muted)"></span>Overview</a>
+  <a href="#architecture"><span class="dot" style="background:var(--muted)"></span>Architecture</a>
+  <a href="#evolution"><span class="dot" style="background:var(--muted)"></span>Evolution</a>
+  <a href="#components"><span class="dot" style="background:var(--muted)"></span>Components</a>
+  <a href="#principles"><span class="dot" style="background:var(--muted)"></span>Principles</a>
 
-            <h2 data-phase="1" id="phase-1">Phase 1 – Central Rules</h2>
-            <h3>Goal</h3>
-            <p>Establish GLS as the single source of truth for labour rules.</p>
+  <div class="nav-section-label">Phases</div>
+  <a href="#phase1"><span class="dot" style="background:var(--p1)"></span>Phase 1 — Rules</a>
+  <a href="#phase2"><span class="dot" style="background:var(--p2)"></span>Phase 2 — Discovery</a>
+  <a href="#phase3"><span class="dot" style="background:var(--p3)"></span>Phase 3 — AI deploy</a>
+  <a href="#capabilities"><span class="dot" style="background:var(--muted)"></span>Capabilities</a>
 
-            <h4>Scope</h4>
-            <ul>
-                <li>Move labour rules from LP to GLS</li>
-                <li>Rule lifecycle management (create, edit, assign, version, audit)</li>
-                <li>Multi-tenant + single-tenant UI</li>
-                <li>CUP-based access control</li>
-                <li>Integration with CFM and SLM</li>
-                <li>Rule assignment notifications</li>
-            </ul>
+  <div class="nav-section-label">Risks</div>
+  <a href="#risks-dev"><span class="dot" style="background:var(--risk-h)"></span>Dev resource</a>
+  <a href="#risks-prod"><span class="dot" style="background:var(--risk-m)"></span>Productivity</a>
+  <a href="#risks-stake"><span class="dot" style="background:var(--risk-l)"></span>Stakeholder</a>
 
-            <h4>Success Criteria</h4>
-            <ul>
-                <li>All rules managed in GLS</li>
-                <li>LP no longer used for configuration</li>
-                <li>Rules consumed by downstream systems</li>
-                <li>UI fully accessible via iQ360</li>
-            </ul>
+  <div class="nav-section-label">People</div>
+  <a href="#stakeholders"><span class="dot" style="background:var(--muted)"></span>Stakeholder map</a>
+</nav>
 
-            <h2 data-phase="2" id="phase-2">Phase 2 – AI Discovery & Scoping</h2>
-            <h3>Goal</h3>
-            <p>Enable insight generation and rule performance understanding.</p>
+<!-- MAIN -->
+<main>
 
-            <h4>Scope</h4>
-            <ul>
-                <li>Analyse rule usage and overrides</li>
-                <li>Integrate timecards and schedules</li>
-                <li>Scenario modelling via SLM</li>
-                <li>"What if" comparisons (past vs future)</li>
-            </ul>
-
-            <h4>Success Criteria</h4>
-            <ul>
-                <li>Users can compare rule scenarios</li>
-                <li>Insights available in iQ360</li>
-                <li>Clear optimisation opportunities identified</li>
-            </ul>
-
-            <h2 data-phase="3" id="phase-3">Phase 3 – AI Deployment</h2>
-            <h3>Goal</h3>
-            <p>Enable automated optimisation and execution.</p>
-
-            <h4>Scope</h4>
-            <ul>
-                <li>AI-driven recommendations</li>
-                <li>Rule and schedule adjustments</li>
-                <li>Integration with Auto Scheduling & Dynamic Labour</li>
-                <li>Approval-based and automated execution</li>
-            </ul>
-
-            <h4>Success Criteria</h4>
-            <ul>
-                <li>Improved labour cost %</li>
-                <li>Increased schedule efficiency</li>
-                <li>Reduced manual intervention</li>
-            </ul>
-
-            <h2 id="components">Component Responsibilities</h2>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Component</th>
-                        <th>Responsibility</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td><strong>GLS</strong></td>
-                        <td>Rule source of truth</td>
-                    </tr>
-                    <tr>
-                        <td><strong>CUP</strong></td>
-                        <td>Access control</td>
-                    </tr>
-                    <tr>
-                        <td><strong>SLM</strong></td>
-                        <td>Simulation & comparison</td>
-                    </tr>
-                    <tr>
-                        <td><strong>CFM</strong></td>
-                        <td>Execution</td>
-                    </tr>
-                    <tr>
-                        <td><strong>LP</strong></td>
-                        <td>Data feeds</td>
-                    </tr>
-                    <tr>
-                        <td><strong>iQ360</strong></td>
-                        <td>UI layer</td>
-                    </tr>
-                    <tr>
-                        <td><strong>Decision Engine</strong></td>
-                        <td>Alerts & orchestration</td>
-                    </tr>
-                </tbody>
-            </table>
-
-            <h2 id="principles">Architecture Principles</h2>
-            <ul>
-                <li><strong>GLS = Control plane</strong> – Central management and source of truth</li>
-                <li><strong>SLM = Intelligence layer</strong> – Scenario modelling and analysis</li>
-                <li><strong>Execution decoupled from rules</strong> – Flexible rule application</li>
-                <li><strong>Unified UI via iQ360 micro-frontends</strong> – Seamless user experience</li>
-            </ul>
-
-            <h2 id="risks">Risks & Mitigations</h2>
-            <div class="risk-item">
-                <span class="risk-badge risk-high">HIGH</span>
-                <div class="risk-text"><strong>Data inconsistency across systems</strong> – Misalignment between rule definitions and execution could impact labour compliance and cost accuracy.</div>
-            </div>
-            <div class="risk-item">
-                <span class="risk-badge risk-medium">MEDIUM</span>
-                <div class="risk-text"><strong>Latency in event-driven architecture</strong> – Delays in event propagation could affect real-time rule updates and schedule adjustments.</div>
-            </div>
-            <div class="risk-item">
-                <span class="risk-badge risk-high">HIGH</span>
-                <div class="risk-text"><strong>Ownership ambiguity</strong> – Unclear responsibility across teams could lead to delayed decisions and unresolved issues.</div>
-            </div>
-            <div class="risk-item">
-                <span class="risk-badge risk-medium">MEDIUM</span>
-                <div class="risk-text"><strong>Alert fatigue</strong> – Excessive notifications from the Decision Engine could reduce user engagement and mask critical alerts.</div>
-            </div>
-
-            <h2 id="stakeholders">Stakeholder Grid</h2>
-            <div class="stakeholder-grid">
-                <div class="stakeholder-card">
-                    <div class="stakeholder-name">GLS Service</div>
-                    <div class="stakeholder-role">Core Component</div>
-                    <div class="stakeholder-responsibility">Central management of labour rules, versioning, and lifecycle</div>
-                </div>
-                <div class="stakeholder-card">
-                    <div class="stakeholder-name">CUP</div>
-                    <div class="stakeholder-role">Access Layer</div>
-                    <div class="stakeholder-responsibility">User authentication and role-based access control</div>
-                </div>
-                <div class="stakeholder-card">
-                    <div class="stakeholder-name">SLM Service</div>
-                    <div class="stakeholder-role">Intelligence Layer</div>
-                    <div class="stakeholder-responsibility">Scenario modelling and comparative analysis</div>
-                </div>
-                <div class="stakeholder-card">
-                    <div class="stakeholder-name">CFM Service</div>
-                    <div class="stakeholder-role">Execution Layer</div>
-                    <div class="stakeholder-responsibility">Rule execution and schedule management</div>
-                </div>
-                <div class="stakeholder-card">
-                    <div class="stakeholder-name">iQ360 UI</div>
-                    <div class="stakeholder-role">User Interface</div>
-                    <div class="stakeholder-responsibility">Unified micro-frontend for rules and insights</div>
-                </div>
-                <div class="stakeholder-card">
-                    <div class="stakeholder-name">Decision Engine</div>
-                    <div class="stakeholder-role">Orchestration</div>
-                    <div class="stakeholder-responsibility">Alerts, recommendations, and automated workflows</div>
-                </div>
-            </div>
-
-            <h2 id="evolution">Evolution Roadmap</h2>
-            <div class="diagram">TODAY:
-Rules → Used
-
-PHASE 1:
-Rules → Centralised
-
-PHASE 2:
-Rules → Analysed
-
-PHASE 3:
-Rules → Optimised automatically</div>
-        </main>
+  <!-- HERO -->
+  <div class="hero" id="overview">
+    <div class="hero-eyebrow">Global Labour Service</div>
+    <h1>Implementation<br>Plan</h1>
+    <p>Three phases from centralised rule management through AI-driven discovery to fully automated labour optimisation. GLS becomes the control plane for all downstream scheduling and execution.</p>
+    <div class="phase-pills">
+      <span class="phase-pill p1">Phase 1 · Central Rules</span>
+      <span class="phase-pill p2">Phase 2 · AI Discovery</span>
+      <span class="phase-pill p3">Phase 3 · AI Deployment</span>
     </div>
+  </div>
 
-    <script>
-        // Sidebar navigation active state
-        document.querySelectorAll('.sidebar-nav a').forEach(link => {
-            link.addEventListener('click', function() {
-                document.querySelectorAll('.sidebar-nav li').forEach(li => li.classList.remove('active'));
-                this.closest('li').classList.add('active');
-            });
-        });
+  <div class="content">
 
-        // Update active nav on scroll
-        const sections = document.querySelectorAll('h2');
-        const navLinks = document.querySelectorAll('.sidebar-nav a');
+    <!-- ARCHITECTURE -->
+    <section id="architecture">
+      <div class="section-label neutral">Architecture</div>
+      <h2>End-to-end flow</h2>
+      <p class="section-desc">User actions enter via the iQ360 micro-frontend, route through the GLS API layer to four core services, converge in the insight and event layer, then flow to the decision engine and location-level execution.</p>
 
-        window.addEventListener('scroll', () => {
-            let current = '';
-            sections.forEach(section => {
-                const sectionTop = section.offsetTop;
-                if (pageYOffset >= sectionTop - 200) {
-                    current = section.getAttribute('id');
-                }
-            });
+      <div class="flow-sequence">
+        <div class="flow-step p1"><div class="flow-step-inner">User<br>iQ360 UI</div></div>
+        <div class="flow-arrow">›</div>
+        <div class="flow-step p1"><div class="flow-step-inner">GLS<br>Micro-frontend</div></div>
+        <div class="flow-arrow">›</div>
+        <div class="flow-step p1"><div class="flow-step-inner">GLS<br>API layer</div></div>
+        <div class="flow-arrow">›</div>
+        <div class="flow-step p1"><div class="flow-step-inner">Rules<br>+ Services</div></div>
+        <div class="flow-arrow">›</div>
+        <div class="flow-step p2"><div class="flow-step-inner">Insight<br>Event layer</div></div>
+        <div class="flow-arrow">›</div>
+        <div class="flow-step p3"><div class="flow-step-inner">Decision<br>Engine</div></div>
+        <div class="flow-arrow">›</div>
+        <div class="flow-step p3"><div class="flow-step-inner">iQ Alerts<br>+ Actions</div></div>
+        <div class="flow-arrow">›</div>
+        <div class="flow-step p3"><div class="flow-step-inner">Location<br>Manager</div></div>
+      </div>
 
-            navLinks.forEach(link => {
-                link.parentElement.classList.remove('active');
-                if (link.getAttribute('href') === `#${current}`) {
-                    link.parentElement.classList.add('active');
-                }
-            });
-        });
-    </script>
+      <div class="flow-diagram">
+        <pre>
+[User (iQ360 UI)]
+       │
+       ▼
+[Micro-Frontend (GLS UI)]
+       │
+       ▼
+[GLS API Layer]
+       │
+       ├────────────┬─────────────────┬─────────────────┐
+       ▼            ▼                 ▼                 ▼
+    [CUP]  [Labour Rules Store]  [SLM Service]   [CFM Service]
+ (Access)   (Source of Truth)    (Modelling)      (Execution)
+       │            │                 │                 │
+       ▼            ▼                 ▼                 ▼
+[User Roles] [Rules+Versions]   [Scenarios]       [Schedules]
+       │            │                 │                 │
+       └────────────┴──────┬──────────┴─────────────────┘
+                           ▼
+               [Insight / Event Layer]
+                           │
+                           ▼
+               [Decision Engine (Optional)]
+                           │
+                           ▼
+                   [iQ Alerts / Actions]
+                           │
+                           ▼
+                  [Location Manager]
+        </pre>
+      </div>
+    </section>
+
+    <!-- EVOLUTION -->
+    <section id="evolution">
+      <div class="section-label neutral">Evolution</div>
+      <h2>From rules used to rules optimised</h2>
+      <p class="section-desc">Four states of maturity across an 12–24 month programme.</p>
+
+      <div class="evolution-track">
+        <div class="evo-item current">
+          <div class="evo-period current">Today</div>
+          <div class="evo-title">Rules used</div>
+          <div class="evo-desc">Rules live in LP. No versioning, no central management, no visibility across tenants. Configuration is manual and fragmented.</div>
+        </div>
+        <div class="evo-item p1">
+          <div class="evo-period p1">Phase 1 · Months 1–4</div>
+          <div class="evo-title">Rules centralised</div>
+          <div class="evo-desc">GLS becomes the single source of truth. Full lifecycle management: create, version, audit, assign. LP decommissioned for configuration. Rules consumed by CFM and SLM via API.</div>
+        </div>
+        <div class="evo-item p2">
+          <div class="evo-period p2">Phase 2 · Months 4–7</div>
+          <div class="evo-title">Rules analysed</div>
+          <div class="evo-desc">Usage patterns, overrides and exceptions surface in iQ360. Labour planners can run what-if scenario comparisons between rule configurations. Optimisation opportunities become visible.</div>
+        </div>
+        <div class="evo-item p3">
+          <div class="evo-period p3">Phase 3 · Months 7–12+</div>
+          <div class="evo-title">Rules optimised automatically</div>
+          <div class="evo-desc">AI recommendations generated by the decision engine. Approval-based or automated execution via CFM. Labour cost %, schedule efficiency and manual intervention all measurably improve.</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- COMPONENTS -->
+    <section id="components">
+      <div class="section-label neutral">Components</div>
+      <h2>System responsibilities</h2>
+      <p class="section-desc">Eight components. Each has a single, clear responsibility.</p>
+
+      <div class="component-grid">
+        <div class="component-card">
+          <div class="component-name">GLS</div>
+          <div class="component-desc">Rule source of truth. Control plane for all labour rule configuration.</div>
+          <div class="component-phases"><span class="cp-dot cp-1">P1</span><span class="cp-dot cp-2">P2</span><span class="cp-dot cp-3">P3</span></div>
+        </div>
+        <div class="component-card">
+          <div class="component-name">CUP</div>
+          <div class="component-desc">Access control and user role management across tenants.</div>
+          <div class="component-phases"><span class="cp-dot cp-1">P1</span><span class="cp-dot cp-2">P2</span><span class="cp-dot cp-3">P3</span></div>
+        </div>
+        <div class="component-card">
+          <div class="component-name">SLM</div>
+          <div class="component-desc">Simulation and scenario modelling. Intelligence layer.</div>
+          <div class="component-phases"><span class="cp-dot cp-1">P1</span><span class="cp-dot cp-2">P2</span><span class="cp-dot cp-3">P3</span></div>
+        </div>
+        <div class="component-card">
+          <div class="component-name">CFM</div>
+          <div class="component-desc">Schedule execution and rule application. Decoupled from rule definition.</div>
+          <div class="component-phases"><span class="cp-dot cp-1">P1</span><span class="cp-dot cp-2">P2</span><span class="cp-dot cp-3">P3</span></div>
+        </div>
+        <div class="component-card">
+          <div class="component-name">LP</div>
+          <div class="component-desc">Data feeds during migration period only. Decommissioned post-Phase 1.</div>
+          <div class="component-phases"><span class="cp-dot cp-1">P1</span></div>
+        </div>
+        <div class="component-card">
+          <div class="component-name">iQ360</div>
+          <div class="component-desc">Unified UI layer. GLS surfaces via micro-frontend within iQ360.</div>
+          <div class="component-phases"><span class="cp-dot cp-1">P1</span><span class="cp-dot cp-2">P2</span><span class="cp-dot cp-3">P3</span></div>
+        </div>
+        <div class="component-card">
+          <div class="component-name">Decision Engine</div>
+          <div class="component-desc">Alert orchestration and AI recommendation generation. Optional until Phase 3.</div>
+          <div class="component-phases"><span class="cp-dot cp-3">P3</span></div>
+        </div>
+        <div class="component-card">
+          <div class="component-name">Location Manager</div>
+          <div class="component-desc">Site-level execution of decisions and schedule changes.</div>
+          <div class="component-phases"><span class="cp-dot cp-3">P3</span></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- PRINCIPLES -->
+    <section id="principles">
+      <div class="section-label neutral">Architecture principles</div>
+      <h2>Design decisions</h2>
+      <p class="section-desc">Six principles that must hold across all three phases.</p>
+
+      <div class="principles-list">
+        <div class="principle-item"><strong>GLS = Control plane.</strong><span>All rule configuration flows through GLS. No bypasses, no parallel systems.</span></div>
+        <div class="principle-item"><strong>SLM = Intelligence layer.</strong><span>Simulation and comparison are SLM responsibilities, not GLS. Keep concerns separate.</span></div>
+        <div class="principle-item"><strong>Execution decoupled from rules.</strong><span>CFM executes; GLS defines. Decoupling allows each to evolve independently.</span></div>
+        <div class="principle-item"><strong>Unified UI via iQ360 micro-frontends.</strong><span>GLS has no standalone UI. It surfaces inside iQ360. Users see one product.</span></div>
+        <div class="principle-item"><strong>Event-driven downstream.</strong><span>Insight and alert layers are async. Latency must be designed for and SLA'd from Phase 1.</span></div>
+        <div class="principle-item"><strong>Approval gates before automation.</strong><span>Phase 3 execution requires configurable approval before auto-apply. No silent changes.</span></div>
+      </div>
+    </section>
+
+    <!-- PHASE 1 -->
+    <section id="phase1">
+      <div class="section-label p1">Phase 1</div>
+      <h2>Central Rules</h2>
+      <p class="section-desc">Establish GLS as the single source of truth. Remove all dependency on LP for rule configuration.</p>
+
+      <div class="phase-block">
+        <div class="phase-block-header">
+          <div class="phase-block-accent" style="background:var(--p1)"></div>
+          <div>
+            <h3>Goal</h3>
+            <p style="font-size:13px;color:var(--muted);font-weight:300;line-height:1.6">Centralise all labour rules in GLS. LP no longer used for configuration. Rules consumed by CFM and SLM. UI accessible via iQ360.</p>
+          </div>
+        </div>
+        <div class="phase-block-body">
+          <h3 style="margin-bottom:10px">Scope</h3>
+          <ul style="list-style:none;display:flex;flex-direction:column;gap:6px">
+            <li style="font-size:13px;color:var(--muted);padding-left:14px;border-left:2px solid var(--p1-border);font-weight:300">Move labour rules from LP to GLS</li>
+            <li style="font-size:13px;color:var(--muted);padding-left:14px;border-left:2px solid var(--p1-border);font-weight:300">Rule lifecycle management: create, edit, assign, version, audit</li>
+            <li style="font-size:13px;color:var(--muted);padding-left:14px;border-left:2px solid var(--p1-border);font-weight:300">Multi-tenant + single-tenant UI via iQ360 micro-frontend</li>
+            <li style="font-size:13px;color:var(--muted);padding-left:14px;border-left:2px solid var(--p1-border);font-weight:300">CUP-based access control across all tenants</li>
+            <li style="font-size:13px;color:var(--muted);padding-left:14px;border-left:2px solid var(--p1-border);font-weight:300">Integration with CFM and SLM for downstream rule consumption</li>
+            <li style="font-size:13px;color:var(--muted);padding-left:14px;border-left:2px solid var(--p1-border);font-weight:300">Rule assignment notifications and change events</li>
+          </ul>
+        </div>
+        <div class="phase-meta-grid">
+          <div class="phase-meta-item">
+            <div class="phase-meta-label">Duration</div>
+            <div class="phase-meta-value">12–16 weeks</div>
+          </div>
+          <div class="phase-meta-item">
+            <div class="phase-meta-label">Dev cost</div>
+            <div class="phase-meta-value">Medium</div>
+          </div>
+          <div class="phase-meta-item">
+            <div class="phase-meta-label">Consultancy need</div>
+            <div class="phase-meta-value" style="font-size:12px;font-weight:400;color:var(--muted)">Rule migration workshops, LP decommission planning</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- PHASE 2 -->
+    <section id="phase2">
+      <div class="section-label p2">Phase 2</div>
+      <h2>AI Discovery &amp; Scoping</h2>
+      <p class="section-desc">Enable insight generation and rule performance understanding through data analysis and scenario modelling.</p>
+
+      <div class="phase-block">
+        <div class="phase-block-header">
+          <div class="phase-block-accent" style="background:var(--p2)"></div>
+          <div>
+            <h3>Goal</h3>
+            <p style="font-size:13px;color:var(--muted);font-weight:300;line-height:1.6">Users can compare rule scenarios and identify optimisation opportunities. Insights surfaced in iQ360. Foundation laid for Phase 3 AI recommendations.</p>
+          </div>
+        </div>
+        <div class="phase-block-body">
+          <h3 style="margin-bottom:10px">Scope</h3>
+          <ul style="list-style:none;display:flex;flex-direction:column;gap:6px">
+            <li style="font-size:13px;color:var(--muted);padding-left:14px;border-left:2px solid var(--p2-border);font-weight:300">Analyse rule usage patterns and overrides</li>
+            <li style="font-size:13px;color:var(--muted);padding-left:14px;border-left:2px solid var(--p2-border);font-weight:300">Integrate timecard and schedule data feeds</li>
+            <li style="font-size:13px;color:var(--muted);padding-left:14px;border-left:2px solid var(--p2-border);font-weight:300">Scenario modelling via SLM</li>
+            <li style="font-size:13px;color:var(--muted);padding-left:14px;border-left:2px solid var(--p2-border);font-weight:300">What-if comparisons: past vs future rule configurations</li>
+            <li style="font-size:13px;color:var(--muted);padding-left:14px;border-left:2px solid var(--p2-border);font-weight:300">Insight display via iQ360 event layer</li>
+          </ul>
+        </div>
+        <div class="phase-meta-grid">
+          <div class="phase-meta-item">
+            <div class="phase-meta-label">Duration</div>
+            <div class="phase-meta-value">10–14 weeks</div>
+          </div>
+          <div class="phase-meta-item">
+            <div class="phase-meta-label">Dev cost</div>
+            <div class="phase-meta-value">High</div>
+          </div>
+          <div class="phase-meta-item">
+            <div class="phase-meta-label">Consultancy need</div>
+            <div class="phase-meta-value" style="font-size:12px;font-weight:400;color:var(--muted)">Productivity analysis framework, insight interpretation training</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- PHASE 3 -->
+    <section id="phase3">
+      <div class="section-label p3">Phase 3</div>
+      <h2>AI Deployment</h2>
+      <p class="section-desc">Enable automated optimisation and rule execution driven by AI recommendations from the decision engine.</p>
+
+      <div class="phase-block">
+        <div class="phase-block-header">
+          <div class="phase-block-accent" style="background:var(--p3)"></div>
+          <div>
+            <h3>Goal</h3>
+            <p style="font-size:13px;color:var(--muted);font-weight:300;line-height:1.6">Measurable improvement to labour cost %, schedule efficiency and manual intervention. AI drives recommendations; humans set policy and approval thresholds.</p>
+          </div>
+        </div>
+        <div class="phase-block-body">
+          <h3 style="margin-bottom:10px">Scope</h3>
+          <ul style="list-style:none;display:flex;flex-direction:column;gap:6px">
+            <li style="font-size:13px;color:var(--muted);padding-left:14px;border-left:2px solid var(--p3-border);font-weight:300">AI-driven rule and schedule recommendations via decision engine</li>
+            <li style="font-size:13px;color:var(--muted);padding-left:14px;border-left:2px solid var(--p3-border);font-weight:300">Approval-based and automated execution via CFM</li>
+            <li style="font-size:13px;color:var(--muted);padding-left:14px;border-left:2px solid var(--p3-border);font-weight:300">Auto Scheduling and Dynamic Labour integration</li>
+            <li style="font-size:13px;color:var(--muted);padding-left:14px;border-left:2px solid var(--p3-border);font-weight:300">Decision engine alert orchestration</li>
+            <li style="font-size:13px;color:var(--muted);padding-left:14px;border-left:2px solid var(--p3-border);font-weight:300">Location-level execution via Location Manager</li>
+          </ul>
+        </div>
+        <div class="phase-meta-grid">
+          <div class="phase-meta-item">
+            <div class="phase-meta-label">Duration</div>
+            <div class="phase-meta-value">14–20 weeks</div>
+          </div>
+          <div class="phase-meta-item">
+            <div class="phase-meta-label">Dev cost</div>
+            <div class="phase-meta-value">Very high</div>
+          </div>
+          <div class="phase-meta-item">
+            <div class="phase-meta-label">Consultancy need</div>
+            <div class="phase-meta-value" style="font-size:12px;font-weight:400;color:var(--muted)">Change management, productivity ROI modelling, exec reporting</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CAPABILITIES -->
+    <section id="capabilities">
+      <div class="section-label neutral">Capabilities</div>
+      <h2>All capabilities by phase</h2>
+      <p class="section-desc">Eight capabilities spanning the three phases and the full flow from rules centralised to optimised.</p>
+
+      <div class="cards-grid">
+        <div class="card p1">
+          <div class="card-phase p1">Phase 1 · Rule management</div>
+          <div class="card-title">Central rules store</div>
+          <div class="card-desc">Single source of truth for all labour rules. Full lifecycle: create, edit, assign, version, audit.</div>
+          <div class="tags"><span class="tag">GLS</span><span class="tag">CFM</span><span class="tag">SLM</span></div>
+        </div>
+        <div class="card p1">
+          <div class="card-phase p1">Phase 1 · Access control</div>
+          <div class="card-title">CUP integration</div>
+          <div class="card-desc">Multi-tenant role-based access. Controls who can view, edit and assign rules across locations.</div>
+          <div class="tags"><span class="tag">CUP</span><span class="tag">iQ360</span></div>
+        </div>
+        <div class="card p1">
+          <div class="card-phase p1">Phase 1 · Notifications</div>
+          <div class="card-title">Assignment alerts</div>
+          <div class="card-desc">Rule assignment and change notifications pushed to downstream teams and systems.</div>
+          <div class="tags"><span class="tag">Decision engine</span><span class="tag">iQ360</span></div>
+        </div>
+        <div class="card p2">
+          <div class="card-phase p2">Phase 2 · Analytics</div>
+          <div class="card-title">Insight generation</div>
+          <div class="card-desc">Analyse rule usage, overrides and exceptions across timecard and schedule data.</div>
+          <div class="tags"><span class="tag">SLM</span><span class="tag">LP feeds</span></div>
+        </div>
+        <div class="card p2">
+          <div class="card-phase p2">Phase 2 · Scenario modelling</div>
+          <div class="card-title">What-if comparisons</div>
+          <div class="card-desc">SLM-powered scenario modelling. Compare past vs future rule configurations across sites.</div>
+          <div class="tags"><span class="tag">SLM</span><span class="tag">iQ360</span></div>
+        </div>
+        <div class="card p3">
+          <div class="card-phase p3">Phase 3 · AI optimisation</div>
+          <div class="card-title">AI recommendations</div>
+          <div class="card-desc">Decision engine generates rule and schedule adjustment recommendations automatically.</div>
+          <div class="tags"><span class="tag">Decision engine</span></div>
+        </div>
+        <div class="card p3">
+          <div class="card-phase p3">Phase 3 · Automation</div>
+          <div class="card-title">Auto execution</div>
+          <div class="card-desc">Approval-based or automated execution via CFM. Integrates with Auto Scheduling and Dynamic Labour.</div>
+          <div class="tags"><span class="tag">CFM</span><span class="tag">SLM</span></div>
+        </div>
+        <div class="card p3">
+          <div class="card-phase p3">Phase 3 · Performance</div>
+          <div class="card-title">Labour cost optimisation</div>
+          <div class="card-desc">Measurable improvement to labour cost %, schedule efficiency and reduced manual intervention.</div>
+          <div class="tags"><span class="tag">iQ360</span><span class="tag">Location mgr</span></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- RISKS DEV -->
+    <section id="risks-dev">
+      <div class="section-label" style="color:var(--risk-h)">Risks · Development resource</div>
+      <h2>Dev resource risks</h2>
+      <p class="section-desc">Four risks tied to engineering capacity, migration complexity and technical design.</p>
+
+      <div class="risk-list">
+        <div class="risk-card">
+          <div class="risk-badge H">H</div>
+          <div class="risk-content">
+            <div class="risk-cat-pill">Dev resource</div>
+            <div class="risk-title">Bandwidth across concurrent phase work</div>
+            <div class="risk-detail">Phases share core engineering teams. Without dedicated squads per phase, Phase 1 delays cascade directly into Phase 2 and 3. Timeline commitments made before resource allocation is confirmed are not credible.</div>
+            <div class="risk-mitigation"><strong>Mitigation:</strong> Define named squads with explicit capacity per phase before programme kick-off. Ring-fence GLS resource from BAU work.</div>
+          </div>
+        </div>
+        <div class="risk-card">
+          <div class="risk-badge H">H</div>
+          <div class="risk-content">
+            <div class="risk-cat-pill">Dev resource</div>
+            <div class="risk-title">LP data migration complexity</div>
+            <div class="risk-detail">Moving rules from LP to GLS has unknown data quality risk. No clean mapping may exist between LP rule structures and the GLS schema. Discovering this late will break Phase 1 delivery.</div>
+            <div class="risk-mitigation"><strong>Mitigation:</strong> Run a discovery spike in Week 1–2 of Phase 1 to map LP rule data before committing to a migration timeline. Budget for a data cleansing workstream.</div>
+          </div>
+        </div>
+        <div class="risk-card">
+          <div class="risk-badge M">M</div>
+          <div class="risk-content">
+            <div class="risk-cat-pill">Dev resource</div>
+            <div class="risk-title">Event-driven latency between systems</div>
+            <div class="risk-detail">The Insight and Event Layer introduces async complexity. CFM and SLM dependencies on near-real-time rule state may surface timing issues under load, particularly during high-volume scheduling periods.</div>
+            <div class="risk-mitigation"><strong>Mitigation:</strong> Define SLA for event propagation in Phase 1 architecture. Load test the event layer before Phase 2 insight features go live.</div>
+          </div>
+        </div>
+        <div class="risk-card">
+          <div class="risk-badge M">M</div>
+          <div class="risk-content">
+            <div class="risk-cat-pill">Dev resource</div>
+            <div class="risk-title">CUP access model scope creep</div>
+            <div class="risk-detail">Multi-tenant access control across GLS involves complex role inheritance. Undefined edge cases will block UI delivery and risk delaying Phase 1 sign-off while access debates continue.</div>
+            <div class="risk-mitigation"><strong>Mitigation:</strong> Run a dedicated CUP access model workshop in Phase 1 discovery. Document all edge cases and get sign-off before build begins.</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- RISKS PRODUCTIVITY -->
+    <section id="risks-prod">
+      <div class="section-label" style="color:var(--risk-m)">Risks · Productivity consultancy</div>
+      <h2>Productivity consultancy risks</h2>
+      <p class="section-desc">Three risks tied to when and how productivity consultancy is engaged across the programme.</p>
+
+      <div class="risk-list">
+        <div class="risk-card">
+          <div class="risk-badge H">H</div>
+          <div class="risk-content">
+            <div class="risk-cat-pill">Productivity</div>
+            <div class="risk-title">Consultancy engagement too late</div>
+            <div class="risk-detail">Productivity consultancy brought in at Phase 2 or 3 misses the chance to shape rule design in Phase 1. Insights and scenario models are only as useful as the rules they analyse. Poorly structured rules in Phase 1 means the Phase 2 intelligence layer is working with bad inputs.</div>
+            <div class="risk-mitigation"><strong>Mitigation:</strong> Engage productivity consultancy before Phase 1 rule design begins. Their input should inform what rules are built and how they are structured for analysis.</div>
+          </div>
+        </div>
+        <div class="risk-card">
+          <div class="risk-badge M">M</div>
+          <div class="risk-content">
+            <div class="risk-cat-pill">Productivity</div>
+            <div class="risk-title">Consultancy output not actioned</div>
+            <div class="risk-detail">Without a defined process for turning productivity insights into rule change requests, Phase 2 outputs sit in a report. Phase 3 never receives useful training signal and AI recommendations will be generic or incorrect.</div>
+            <div class="risk-mitigation"><strong>Mitigation:</strong> Define the insight-to-rule-change workflow in Phase 2 design. Build an approval path from insight to rule update in the GLS UI.</div>
+          </div>
+        </div>
+        <div class="risk-card">
+          <div class="risk-badge L">L</div>
+          <div class="risk-content">
+            <div class="risk-cat-pill">Productivity</div>
+            <div class="risk-title">Scenario modelling adoption</div>
+            <div class="risk-detail">SLM what-if comparisons are only useful if labour planners trust and understand the model outputs. Without consultancy-led training alongside the tool launch, Phase 2 investment is wasted.</div>
+            <div class="risk-mitigation"><strong>Mitigation:</strong> Include user enablement as a Phase 2 delivery requirement, not an afterthought. Productivity consultants should co-design training materials.</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- RISKS STAKEHOLDER -->
+    <section id="risks-stake">
+      <div class="section-label" style="color:var(--risk-l)">Risks · Stakeholder involvement</div>
+      <h2>Stakeholder risks</h2>
+      <p class="section-desc">Three risks tied to governance, engagement and behavioural adoption.</p>
+
+      <div class="risk-list">
+        <div class="risk-card">
+          <div class="risk-badge H">H</div>
+          <div class="risk-content">
+            <div class="risk-cat-pill">Stakeholder</div>
+            <div class="risk-title">No single business owner across phases</div>
+            <div class="risk-detail">Without a named, empowered product owner for GLS end-to-end, phase handoffs will stall at sign-off, priorities will conflict between workstreams, and the programme will lose coherence across its 18–24 month span.</div>
+            <div class="risk-mitigation"><strong>Mitigation:</strong> Name a single product owner before Phase 1 starts. This person must have authority to make scope and priority decisions across all three phases.</div>
+          </div>
+        </div>
+        <div class="risk-card">
+          <div class="risk-badge M">M</div>
+          <div class="risk-content">
+            <div class="risk-cat-pill">Stakeholder</div>
+            <div class="risk-title">Alert fatigue from notification layer</div>
+            <div class="risk-detail">Without threshold governance from Phase 1, the Decision Engine in Phase 3 will generate high alert volumes. Stakeholders will disengage from iQ360 alerts and the value of Phase 3 automation will be undermined before it launches.</div>
+            <div class="risk-mitigation"><strong>Mitigation:</strong> Define alert governance policy in Phase 1 even though the Decision Engine is Phase 3. Build threshold controls into the notification layer from the start.</div>
+          </div>
+        </div>
+        <div class="risk-card">
+          <div class="risk-badge L">L</div>
+          <div class="risk-content">
+            <div class="risk-cat-pill">Stakeholder</div>
+            <div class="risk-title">Ops teams bypassing GLS for urgent changes</div>
+            <div class="risk-detail">If rule change turnaround in GLS is slower than existing LP workarounds, operational teams will revert to legacy processes. The system will become inconsistent and trust in GLS as the source of truth will erode.</div>
+            <div class="risk-mitigation"><strong>Mitigation:</strong> GLS rule change UX must be at least as fast as LP. Define change-request SLAs in Phase 1 acceptance criteria. Monitor bypass behaviour post-launch.</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- STAKEHOLDERS -->
+    <section id="stakeholders">
+      <div class="section-label neutral">People</div>
+      <h2>Stakeholder map</h2>
+      <p class="section-desc">Six roles. Phase dots show when each is actively involved. Engagement requirements are non-optional.</p>
+
+      <div class="stakeholder-grid">
+        <div class="stakeholder-card">
+          <div class="sh-top">
+            <div class="sh-avatar" style="background:rgba(45,212,160,0.12);color:var(--p1)">PO</div>
+            <div>
+              <div class="sh-name">Product owner</div>
+              <div class="sh-role">GLS programme</div>
+            </div>
+          </div>
+          <div class="sh-involve">Owns end-to-end delivery. Signs off phase transitions. Chairs steering group. Must be named and empowered before Phase 1 build begins. Single point of accountability for scope and priority decisions across all phases.</div>
+          <div class="sh-phases">
+            <div class="sh-phase-dot on-1">1</div>
+            <div class="sh-phase-dot on-2">2</div>
+            <div class="sh-phase-dot on-3">3</div>
+          </div>
+        </div>
+
+        <div class="stakeholder-card">
+          <div class="sh-top">
+            <div class="sh-avatar" style="background:rgba(45,212,160,0.08);color:var(--p1)">LP</div>
+            <div>
+              <div class="sh-name">Labour planner</div>
+              <div class="sh-role">Operations / productivity</div>
+            </div>
+          </div>
+          <div class="sh-involve">Primary end user of rules and scenario models. Defines rule requirements in Phase 1. Validates scenario outputs in Phase 2. Reviews and approves AI recommendations in Phase 3. Critical for adoption.</div>
+          <div class="sh-phases">
+            <div class="sh-phase-dot on-1">1</div>
+            <div class="sh-phase-dot on-2">2</div>
+            <div class="sh-phase-dot on-3">3</div>
+          </div>
+        </div>
+
+        <div class="stakeholder-card">
+          <div class="sh-top">
+            <div class="sh-avatar" style="background:rgba(240,168,67,0.12);color:var(--p2)">PC</div>
+            <div>
+              <div class="sh-name">Productivity consultant</div>
+              <div class="sh-role">External / internal</div>
+            </div>
+          </div>
+          <div class="sh-involve">Must be engaged from Phase 1 rule design — not after. Defines insight framework for Phase 2. Leads ROI modelling and change management in Phase 3. Late engagement is a high-severity risk.</div>
+          <div class="sh-phases">
+            <div class="sh-phase-dot on-1">1</div>
+            <div class="sh-phase-dot on-2">2</div>
+            <div class="sh-phase-dot on-3">3</div>
+          </div>
+        </div>
+
+        <div class="stakeholder-card">
+          <div class="sh-top">
+            <div class="sh-avatar" style="background:rgba(224,92,106,0.12);color:var(--p3)">TL</div>
+            <div>
+              <div class="sh-name">Tech lead</div>
+              <div class="sh-role">GLS engineering</div>
+            </div>
+          </div>
+          <div class="sh-involve">Architects integration with CFM, SLM, CUP. De-risks LP migration. Owns event layer design and performance. Key escalation point for technical risk across all phases.</div>
+          <div class="sh-phases">
+            <div class="sh-phase-dot on-1">1</div>
+            <div class="sh-phase-dot on-2">2</div>
+            <div class="sh-phase-dot on-3">3</div>
+          </div>
+        </div>
+
+        <div class="stakeholder-card">
+          <div class="sh-top">
+            <div class="sh-avatar" style="background:rgba(130,100,220,0.12);color:#a48ce8">ES</div>
+            <div>
+              <div class="sh-name">Ops exec sponsor</div>
+              <div class="sh-role">Senior leadership</div>
+            </div>
+          </div>
+          <div class="sh-involve">Approves programme funding. Visible sponsorship for Phase 1 launch comms. Required for Phase 3 automated execution sign-off — AI-driven rule changes require exec-level governance and audit trail.</div>
+          <div class="sh-phases">
+            <div class="sh-phase-dot on-1">1</div>
+            <div class="sh-phase-dot off">2</div>
+            <div class="sh-phase-dot on-3">3</div>
+          </div>
+        </div>
+
+        <div class="stakeholder-card">
+          <div class="sh-top">
+            <div class="sh-avatar" style="background:rgba(120,120,110,0.15);color:var(--muted)">LP</div>
+            <div>
+              <div class="sh-name">LP system owner</div>
+              <div class="sh-role">Existing platform</div>
+            </div>
+          </div>
+          <div class="sh-involve">Provides data feed continuity during migration. Must agree LP decommission timeline and support rule data mapping in Phase 1. Risk: disengagement or obstruction once decommission scope is confirmed.</div>
+          <div class="sh-phases">
+            <div class="sh-phase-dot on-1">1</div>
+            <div class="sh-phase-dot off">2</div>
+            <div class="sh-phase-dot off">3</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </div>
+</main>
+
+<script>
+const sections = document.querySelectorAll('section, .hero');
+const navLinks = document.querySelectorAll('nav a');
+
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      const id = entry.target.id;
+      navLinks.forEach(link => {
+        link.classList.toggle('active', link.getAttribute('href') === '#' + id);
+      });
+    }
+  });
+}, { rootMargin: '-20% 0px -70% 0px' });
+
+sections.forEach(s => { if (s.id) observer.observe(s); });
+</script>
 </body>
 </html>
