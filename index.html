@@ -917,7 +917,7 @@ nav a { scroll-margin-top: 0; }
         <div class="evo-item p1">
           <div class="evo-period p1">Phase 1 · Months 1–4</div>
           <div class="evo-title">Rules centralised</div>
-          <div class="evo-desc">GLS becomes the single source of truth. Full lifecycle management: create, version, audit, assign. LP decommissioned for configuration. Rules consumed by CFM and SLM via API.</div>
+          <div class="evo-desc">GLS becomes the single source of truth. Full lifecycle management: create, version, audit, assign. LP/HS decommissioned for configuration for the selected customers. Rules consumed by CFM and SLM via API.</div>
         </div>
         <div class="evo-item p2">
           <div class="evo-period p2">Phase 2 · Months 4–7</div>
@@ -1002,20 +1002,20 @@ nav a { scroll-margin-top: 0; }
     <section id="phase1">
       <div class="section-label p1">Phase 1</div>
       <h2>Central Rules</h2>
-      <p class="section-desc">Establish GLS as the single source of truth. Remove all dependency on LP for rule configuration.</p>
+      <p class="section-desc">Establish GLS as the single source of truth. Remove all dependency on LP/HS for rule configuration.</p>
 
       <div class="phase-block">
         <div class="phase-block-header">
           <div class="phase-block-accent" style="background:var(--p1)"></div>
           <div>
             <h3>Goal</h3>
-            <p style="font-size:13px;color:var(--muted);font-weight:300;line-height:1.6">Centralise all labour rules in GLS. LP no longer used for configuration. Rules consumed by CFM and SLM. UI accessible via iQ360.</p>
+            <p style="font-size:13px;color:var(--muted);font-weight:300;line-height:1.6">Centralise all labour rules in GLS. LP and HS no longer used for configuration. Rules consumed by CFM and SLM. UI accessible via iQ360.</p>
           </div>
         </div>
         <div class="phase-block-body">
           <h3 style="margin-bottom:10px">Scope</h3>
           <ul style="list-style:none;display:flex;flex-direction:column;gap:6px">
-            <li style="font-size:13px;color:var(--muted);padding-left:14px;border-left:2px solid var(--p1-border);font-weight:300">Move labour rules from LP to GLS</li>
+            <li style="font-size:13px;color:var(--muted);padding-left:14px;border-left:2px solid var(--p1-border);font-weight:300">Move labour rules from LP and HS to GLS</li>
             <li style="font-size:13px;color:var(--muted);padding-left:14px;border-left:2px solid var(--p1-border);font-weight:300">Rule lifecycle management: create, edit, assign, version, audit</li>
             <li style="font-size:13px;color:var(--muted);padding-left:14px;border-left:2px solid var(--p1-border);font-weight:300">Multi-tenant + single-tenant UI via iQ360 micro-frontend</li>
             <li style="font-size:13px;color:var(--muted);padding-left:14px;border-left:2px solid var(--p1-border);font-weight:300">CUP-based access control across all tenants</li>
@@ -1200,9 +1200,9 @@ nav a { scroll-margin-top: 0; }
           <div class="risk-badge H">H</div>
           <div class="risk-content">
             <div class="risk-cat-pill">Dev resource</div>
-            <div class="risk-title">LP data migration complexity</div>
-            <div class="risk-detail">Moving rules from LP to GLS has unknown data quality risk. No clean mapping may exist between LP rule structures and the GLS schema. Discovering this late will break Phase 1 delivery.</div>
-            <div class="risk-mitigation"><strong>Mitigation:</strong> Run a discovery spike in Week 1–2 of Phase 1 to map LP rule data before committing to a migration timeline. Budget for a data cleansing workstream.</div>
+            <div class="risk-title">LP/HS data migration complexity</div>
+            <div class="risk-detail">Moving rules from LP and HS to GLS has unknown data quality risk. No clean mapping may exist between LP/HS rule structures and the GLS schema. Discovering this late will break Phase 1 delivery.</div>
+            <div class="risk-mitigation"><strong>Mitigation:</strong> Run a discovery spike in Week 1–2 of Phase 1 to map LP/HS rule data before committing to a migration timeline. Budget for a data cleansing workstream.</div>
           </div>
         </div>
         <div class="risk-card">
@@ -1293,8 +1293,8 @@ nav a { scroll-margin-top: 0; }
           <div class="risk-content">
             <div class="risk-cat-pill">Stakeholder</div>
             <div class="risk-title">Ops teams bypassing GLS for urgent changes</div>
-            <div class="risk-detail">If rule change turnaround in GLS is slower than existing LP workarounds, operational teams will revert to legacy processes. The system will become inconsistent and trust in GLS as the source of truth will erode.</div>
-            <div class="risk-mitigation"><strong>Mitigation:</strong> GLS rule change UX must be at least as fast as LP. Define change-request SLAs in Phase 1 acceptance criteria. Monitor bypass behaviour post-launch.</div>
+            <div class="risk-detail">If rule change turnaround in GLS is slower than existing LP/HS workarounds, operational teams will revert to legacy processes. The system will become inconsistent and trust in GLS as the source of truth will erode.</div>
+            <div class="risk-mitigation"><strong>Mitigation:</strong> GLS rule change UX must be at least as fast as LP/HS. Define change-request SLAs in Phase 1 acceptance criteria. Monitor bypass behaviour post-launch.</div>
           </div>
         </div>
       </div>
@@ -1363,7 +1363,7 @@ nav a { scroll-margin-top: 0; }
               <div class="sh-role">GLS engineering</div>
             </div>
           </div>
-          <div class="sh-involve">Architects integration with CFM, SLM, CUP. De-risks LP migration. Owns event layer design and performance. Key escalation point for technical risk across all phases.</div>
+          <div class="sh-involve">Architects integration with CFM, SLM, CUP. De-risks LP/HS migration. Owns event layer design and performance. Key escalation point for technical risk across all phases.</div>
           <div class="sh-phases">
             <div class="sh-phase-dot on-1">1</div>
             <div class="sh-phase-dot on-2">2</div>
@@ -1391,11 +1391,11 @@ nav a { scroll-margin-top: 0; }
           <div class="sh-top">
             <div class="sh-avatar" style="background:rgba(120,120,110,0.15);color:var(--muted)">LP</div>
             <div>
-              <div class="sh-name">LP system owner</div>
+              <div class="sh-name">LP and HS system owner</div>
               <div class="sh-role">Existing platform</div>
             </div>
           </div>
-          <div class="sh-involve">Provides data feed continuity during migration. Must agree LP decommission timeline and support rule data mapping in Phase 1. Risk: disengagement or obstruction once decommission scope is confirmed.</div>
+          <div class="sh-involve">Provides data feed continuity during migration. Must agree LP / HS decommission timeline and support rule data mapping in Phase 1. Risk: disengagement or obstruction once decommission scope is confirmed. Without full rule functionality implemented decomission can not happen.</div>
           <div class="sh-phases">
             <div class="sh-phase-dot on-1">1</div>
             <div class="sh-phase-dot off">2</div>
